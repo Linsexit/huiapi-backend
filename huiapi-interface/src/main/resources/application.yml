@@ -1,0 +1,8 @@
+server:
+  port: 7165
+  servlet:
+    context-path: /api
+huiapi:
+  client:
+    access-key: xiaolu
+    secret-key: showMeWhatYourName

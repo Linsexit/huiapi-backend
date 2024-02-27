@@ -1,0 +1,44 @@
+server:
+  port: 8107
+
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - AddRequestHeader=source, xiaolu
+      routes:
+        - id: api_route
+          uri: http://localhost:7165
+          predicates:
+            - Path=/api/**
+          filters:
+            - AddRequestParameter=name, dog
+              # 断路器，用来降级
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/fallback
+#        外部的降级策略
+        - id: hui_fallback
+          uri: http://localhost:7165/api/name/error
+          predicates:
+            - Path=/fallback
+
+
+# 开启网关日志的最低级别
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+# nacos
+dubbo:
+  application:
+    name: dubbo-springboot-demo-consumer
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848
